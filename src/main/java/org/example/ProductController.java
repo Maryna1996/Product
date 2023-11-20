@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -12,31 +11,34 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    private List<Product> products;
+    private OrderRepository orderRepository;
 
     @PostMapping
     public ResponseEntity<String> createProduct(@RequestBody Product newProduct) {
-        products.add(newProduct);
+        orderRepository.addProduct(newProduct);
         return ResponseEntity.ok("Product created successfully");
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> getProductById(@PathVariable long productId) {
-        return products.stream()
-                .filter(product -> product.getId() == productId)
-                .findFirst()
-                .map(product -> ResponseEntity.ok().body(product))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> getProductById(@PathVariable long productId) {
+        Product product = orderRepository.getProductById(productId);
+        if (product != null) {
+            return ResponseEntity.ok().body(product);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping
     public List<Product> getAllProducts() {
-        return products;
+        return orderRepository.getAllProducts();
     }
 
     @DeleteMapping("/{productId}")
-    public String deleteProduct(@PathVariable long productId) {
-        boolean removed = products.removeIf(product -> product.getId() == productId);
-        return removed ? "Product deleted successfully" : "Product not found";
+    public ResponseEntity<String> deleteProduct(@PathVariable long productId) {
+        boolean removed = orderRepository.removeProduct(productId);
+        return removed
+                ? ResponseEntity.ok("Product deleted successfully")
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
     }
 }
