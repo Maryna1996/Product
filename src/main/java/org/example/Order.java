@@ -1,11 +1,8 @@
 package org.example;
-
 import java.util.Date;
 import java.util.List;
 
 public class Order {
-
-
     private long id;
     private Date date;
     private double cost;
