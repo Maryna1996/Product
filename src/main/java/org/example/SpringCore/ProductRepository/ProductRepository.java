@@ -1,4 +1,6 @@
-package org.example.SpringCore;
+package org.example.SpringCore.ProductRepository;
+
+import org.example.SpringCore.Product.Product;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,8 @@
-package org.example.SpringCore;
+package org.example.SpringCore.ShoppingCartApp;
 
+import org.example.SpringCore.AppConfig.AppConfig;
+import org.example.SpringCore.Product.Product;
+import org.example.SpringCore.ProductRepository.ProductRepository;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.example.SpringCore;
+package org.example.SpringCore.Product;
 
 public class Product {
     private long id;
