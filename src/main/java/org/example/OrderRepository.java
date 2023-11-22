@@ -1,20 +1,10 @@
 package org.example;
 
-import org.springframework.stereotype.Component;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-@Component
 public class OrderRepository {
-    private Map<Long, Order> orders;
-    private Map<Long, Product> products;
-    public OrderRepository() {
-        this.orders = new HashMap<>();
-        this.products = new HashMap<>();
-    }
+    private Map<Long, Order> orders = new HashMap<>();
+    private Long orderId;
 
     public Order getOrderById(long orderId) {
         return orders.get(orderId);
@@ -29,18 +19,43 @@ public class OrderRepository {
     }
 
     public void addProduct(Product newProduct) {
-        products.put(newProduct.getId(), newProduct);
+        Order order = orders.get(newProduct.getId());
+        if (order != null) {
+            order.getProducts().add(newProduct);
+        }
     }
 
     public Product getProductById(long productId) {
-        return products.get(productId);
-    }
-
-    public List<Product> getAllProducts() {
-        return new ArrayList<>(products.values());
+        for (Order order : orders.values()) {
+            for (Product product : order.getProducts()) {
+                if (product.getId() == productId) {
+                    return product;
+                }
+            }
+        }
+        return null;
     }
 
     public boolean removeProduct(long productId) {
-        return products.remove(productId) != null;
+        for (Order order : orders.values()) {
+            List<Product> products = order.getProducts();
+            Iterator<Product> iterator = products.iterator();
+            while (iterator.hasNext()) {
+                Product product = iterator.next();
+                if (product.getId() == productId) {
+                    iterator.remove();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public List<Product> getAllProducts() {
+        List<Product> allProducts = new ArrayList<>();
+        for (Order order : orders.values()) {
+            allProducts.addAll(order.getProducts());
+        }
+        return allProducts;
     }
 }
